@@ -73,9 +73,7 @@ const ROTATION_OFFSETS: [[u32; 5]; 5] = [
 
 // A `x` and `y` index into a flattened matrix.
 #[inline(always)]
-const fn ind(x: usize, y: usize) -> usize {
-    x + B * y
-}
+const fn ind(x: usize, y: usize) -> usize { x + B * y }
 
 // A flattened 5x5 matrix of little-endian `u64`.
 #[derive(Clone, Default)]
@@ -94,19 +92,13 @@ impl fmt::Debug for KeccakState {
 }
 
 impl KeccakState {
-    const fn new() -> Self {
-        Self([0u64; NUM_LANES])
-    }
+    const fn new() -> Self { Self([0u64; NUM_LANES]) }
 
     #[inline(always)]
-    fn assign(&mut self, x: usize, y: usize, val: u64) {
-        self.0[ind(x, y)] = val;
-    }
+    fn assign(&mut self, x: usize, y: usize, val: u64) { self.0[ind(x, y)] = val; }
 
     #[inline(always)]
-    const fn lane(&self, x: usize, y: usize) -> u64 {
-        self.0[ind(x, y)]
-    }
+    const fn lane(&self, x: usize, y: usize) -> u64 { self.0[ind(x, y)] }
 
     #[inline(always)]
     const fn column_xor(&self, x: usize) -> u64 {
@@ -118,9 +110,7 @@ impl KeccakState {
     }
 
     #[inline(always)]
-    fn xor_assign(&mut self, x: usize, y: usize, val: u64) {
-        self.0[ind(x, y)] ^= val
-    }
+    fn xor_assign(&mut self, x: usize, y: usize, val: u64) { self.0[ind(x, y)] ^= val }
 
     #[inline(always)]
     const fn chi(&self, x: usize, y: usize) -> u64 {
@@ -182,9 +172,7 @@ pub struct HashEngine {
 
 impl HashEngine {
     /// Construct a new Sha3-256 hash engine.
-    pub const fn new() -> Self {
-        Self { state: KeccakState::new(), bytes_hashed: 0 }
-    }
+    pub const fn new() -> Self { Self { state: KeccakState::new(), bytes_hashed: 0 } }
 
     fn absorb(&mut self, block: [u8; RATE]) {
         for lane in 0..RATE_LANES {
@@ -221,9 +209,7 @@ impl crate::HashEngine for HashEngine {
         keccakf1600(&mut self.state);
     }
 
-    fn n_bytes_hashed(&self) -> u64 {
-        self.bytes_hashed
-    }
+    fn n_bytes_hashed(&self) -> u64 { self.bytes_hashed }
 
     fn finalize(self) -> Self::Hash {
         let mut out = [0u8; 32];
@@ -241,7 +227,9 @@ impl crate::HashEngine for HashEngine {
 mod tests {
     use alloc::string::ToString;
     use alloc::vec::Vec;
+
     use hex::prelude::*;
+
     use crate::HashEngine;
 
     struct TestCase {
