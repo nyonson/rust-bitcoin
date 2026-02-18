@@ -13,6 +13,9 @@ features_with_std = ["serde", "arbitrary"]
 # Tests each feature alone, all pairs, and all together.
 features_without_std = ["alloc", "serde", "arbitrary"]
 
+[api]
+features = [["alloc"]]
+
 [lint]
 allowed_duplicates = [
     "hex-conservative",

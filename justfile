@@ -56,8 +56,13 @@ ci-bench: (ci "bench")
 
 # Check for API changes.
 [group('scripts')]
-check-api:
- {{justfile_directory()}}/contrib/check-for-api-changes.sh
+@check-api: _install-tools
+  cargo +{{NIGHTLY_VERSION}} rbmt api \
+    --package bitcoin-consensus-encoding \
+    --package bitcoin-units \
+    --package bitcoin-primitives \
+    --package bitcoin-internals \
+    --package bitcoin_hashes
 
 # Query the current API.
 [group('scripts')]
