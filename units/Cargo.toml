@@ -37,3 +37,17 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [lints]
 workspace = true
+
+[package.metadata.rbmt.test]
+exact_features = [
+    ["alloc", "encoding"],
+    ["alloc", "serde"],
+    ["encoding", "serde"],
+    ["std", "encoding"],
+    ["std", "serde"],
+    ["alloc", "encoding", "serde"],
+    ["std", "encoding", "serde"],
+]
+
+[package.metadata.rbmt.prerelease]
+enabled = true

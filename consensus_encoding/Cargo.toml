@@ -35,3 +35,9 @@ required-features = ["alloc"]
 
 [lints]
 workspace = true
+
+[package.metadata.rbmt.test]
+examples = ["encoder:alloc"]
+
+[package.metadata.rbmt.prerelease]
+enabled = true

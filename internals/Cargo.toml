@@ -36,3 +36,13 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [lints]
 workspace = true
+
+[package.metadata.rbmt.test]
+exclude_features = ["serde_json", "bincode"]
+exact_features = [
+    ["alloc", "serde"],
+    ["std", "serde"],
+]
+
+[package.metadata.rbmt.prerelease]
+enabled = true

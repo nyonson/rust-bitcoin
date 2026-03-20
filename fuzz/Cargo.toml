@@ -27,6 +27,11 @@ unexpected_cfgs = { level = "deny", check-cfg = ['cfg(fuzzing)'] }
 redundant_clone = "warn"
 use_self = "warn"
 
+[package.metadata.rbmt.lint]
+allowed_duplicates = [
+    "hex-conservative",
+]
+
 [[bin]]
 name = "bitcoin_arbitrary_block"
 path = "fuzz_targets/bitcoin/arbitrary_block.rs"

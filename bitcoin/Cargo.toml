@@ -106,3 +106,82 @@ unexpected_cfgs = { level = "deny", check-cfg = ['cfg(fuzzing)', 'cfg(kani)'] }
 [lints.clippy]
 redundant_clone = "warn"
 use_self = "warn"
+
+[package.metadata.rbmt.test]
+examples = [
+    "bip32",
+    "bip32:-",
+    "ecdsa-psbt:std bitcoinconsensus",
+    "sign-tx-segwit-v0:rand std",
+    "sign-tx-taproot:rand std",
+    "taproot-psbt:bitcoinconsensus rand std",
+    "sighash:std",
+    "serde:std serde",
+]
+exact_features = [
+    ["base64", "bitcoinconsensus"],
+    ["base64", "rand"],
+    ["base64", "secp-recovery"],
+    ["base64", "serde"],
+    ["bitcoinconsensus", "rand"],
+    ["bitcoinconsensus", "secp-recovery"],
+    ["bitcoinconsensus", "serde"],
+    ["rand", "secp-recovery"],
+    ["rand", "serde"],
+    ["secp-recovery", "serde"],
+    ["std", "base64"],
+    ["std", "bitcoinconsensus"],
+    ["std", "rand"],
+    ["std", "secp-recovery"],
+    ["std", "serde"],
+    ["base64", "bitcoinconsensus", "rand"],
+    ["base64", "bitcoinconsensus", "secp-recovery"],
+    ["base64", "bitcoinconsensus", "serde"],
+    ["base64", "rand", "secp-recovery"],
+    ["base64", "rand", "serde"],
+    ["base64", "secp-recovery", "serde"],
+    ["bitcoinconsensus", "rand", "secp-recovery"],
+    ["bitcoinconsensus", "rand", "serde"],
+    ["bitcoinconsensus", "secp-recovery", "serde"],
+    ["rand", "secp-recovery", "serde"],
+    ["std", "base64", "bitcoinconsensus"],
+    ["std", "base64", "rand"],
+    ["std", "base64", "secp-recovery"],
+    ["std", "base64", "serde"],
+    ["std", "bitcoinconsensus", "rand"],
+    ["std", "bitcoinconsensus", "secp-recovery"],
+    ["std", "bitcoinconsensus", "serde"],
+    ["std", "rand", "secp-recovery"],
+    ["std", "rand", "serde"],
+    ["std", "secp-recovery", "serde"],
+    ["base64", "bitcoinconsensus", "rand", "secp-recovery"],
+    ["base64", "bitcoinconsensus", "rand", "serde"],
+    ["base64", "bitcoinconsensus", "secp-recovery", "serde"],
+    ["base64", "rand", "secp-recovery", "serde"],
+    ["bitcoinconsensus", "rand", "secp-recovery", "serde"],
+    ["std", "base64", "bitcoinconsensus", "rand"],
+    ["std", "base64", "bitcoinconsensus", "secp-recovery"],
+    ["std", "base64", "bitcoinconsensus", "serde"],
+    ["std", "base64", "rand", "secp-recovery"],
+    ["std", "base64", "rand", "serde"],
+    ["std", "base64", "secp-recovery", "serde"],
+    ["std", "bitcoinconsensus", "rand", "secp-recovery"],
+    ["std", "bitcoinconsensus", "rand", "serde"],
+    ["std", "bitcoinconsensus", "secp-recovery", "serde"],
+    ["std", "rand", "secp-recovery", "serde"],
+    ["base64", "bitcoinconsensus", "rand", "secp-recovery", "serde"],
+    ["std", "base64", "bitcoinconsensus", "rand", "secp-recovery"],
+    ["std", "base64", "bitcoinconsensus", "rand", "serde"],
+    ["std", "base64", "bitcoinconsensus", "secp-recovery", "serde"],
+    ["std", "base64", "rand", "secp-recovery", "serde"],
+    ["std", "bitcoinconsensus", "rand", "secp-recovery", "serde"],
+    ["std", "base64", "bitcoinconsensus", "rand", "secp-recovery", "serde"],
+]
+
+[package.metadata.rbmt.lint]
+allowed_duplicates = [
+    "hex-conservative",
+]
+
+[package.metadata.rbmt.prerelease]
+enabled = true

@@ -33,3 +33,14 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [lints]
 workspace = true
+
+[package.metadata.rbmt.test]
+exact_features = [
+    ["alloc", "hashes"],
+    ["std", "hashes"],
+]
+
+[package.metadata.rbmt.lint]
+allowed_duplicates = [
+    "hex-conservative",
+]

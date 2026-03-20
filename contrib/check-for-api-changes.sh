@@ -9,7 +9,7 @@ set -euo pipefail
 REPO_DIR=$(git rev-parse --show-toplevel)
 API_DIR="$REPO_DIR/api"
 
-NIGHTLY=$(cat "$REPO_DIR/nightly-version")
+NIGHTLY=$(cargo metadata --format-version 1 | jq -r '.metadata.rbmt.toolchains.nightly')
 # Our docs have broken intra doc links if all features are not enabled.
 RUSTDOCFLAGS="-A rustdoc::broken_intra_doc_links"
 
