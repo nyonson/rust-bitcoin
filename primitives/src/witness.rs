@@ -30,6 +30,20 @@ use crate::TxIn;
 #[cfg(feature = "alloc")]
 const MAX_VECTOR_ALLOCATE: usize = 1_000_000;
 
+/// Maximum number of items in a witness stack.
+///
+/// This is an anti-DoS limit based on Bitcoin's 4MB block weight limit.
+/// Witness data is part of transactions, which are part of blocks, so witness
+/// items (assuming 1-byte per item) cannot exceed what fits in a block.
+const MAX_WITNESS_STACK_ITEMS: usize = 4_000_000;
+
+/// Maximum byte size of a single witness stack item.
+///
+/// This is an anti-DoS limit based on Bitcoin's 4MB block weight limit.
+/// Witness data is part of transactions, which are part of blocks, so a
+/// single witness item cannot exceed what fits in a block.
+const MAX_WITNESS_ITEM_SIZE: usize = 4_000_000;
+
 /// The Witness is the data used to unlock bitcoin since the [SegWit upgrade].
 ///
 /// Can be logically seen as an array of bytestrings, i.e. `Vec<Vec<u8>>`, and it is serialized on the wire
@@ -313,9 +327,9 @@ impl WitnessDecoder {
             content: Vec::new(),
             cursor: 0,
             witness_elements: None,
-            witness_count_decoder: CompactSizeDecoder::new(),
+            witness_count_decoder: CompactSizeDecoder::new_with_limit(MAX_WITNESS_STACK_ITEMS),
             element_idx: 0,
-            element_length_decoder: CompactSizeDecoder::new(),
+            element_length_decoder: CompactSizeDecoder::new_with_limit(MAX_WITNESS_ITEM_SIZE),
             element_bytes_remaining: None,
         }
     }

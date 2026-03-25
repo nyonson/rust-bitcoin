@@ -19,6 +19,14 @@ use crate::compact_size::{CompactSizeDecoder, CompactSizeDecoderError};
 #[cfg(feature = "alloc")]
 const MAX_VECTOR_ALLOCATE: usize = 1_000_000;
 
+/// Maximum number of elements in a decoded vector.
+///
+/// This is an anti-DoS limit based on Bitcoin's 4MB block weight limit.
+/// Applied to both byte vectors [`ByteVecDecoder`] and typed vectors [`VecDecoder`],
+/// regardless of whether the element type is a single byte or a larger structure.
+#[cfg(feature = "alloc")]
+const MAX_VEC_SIZE: usize = 4_000_000;
+
 /// A decoder that decodes a byte vector.
 ///
 /// The encoding is expected to start with the number of encoded bytes (length prefix).
@@ -36,7 +44,7 @@ impl ByteVecDecoder {
     /// Constructs a new byte decoder.
     pub const fn new() -> Self {
         Self {
-            prefix_decoder: Some(CompactSizeDecoder::new()),
+            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE)),
             buffer: Vec::new(),
             bytes_expected: 0,
             bytes_written: 0,
@@ -178,7 +186,7 @@ impl<T: Decodable> VecDecoder<T> {
     /// Constructs a new byte decoder.
     pub const fn new() -> Self {
         Self {
-            prefix_decoder: Some(CompactSizeDecoder::new()),
+            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE)),
             length: 0,
             buffer: Vec::new(),
             decoder: None,

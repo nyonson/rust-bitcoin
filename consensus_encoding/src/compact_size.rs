@@ -13,11 +13,14 @@ use internals::array_vec::ArrayVec;
 use crate::decode::Decoder;
 use crate::encode::{Encoder, ExactSizeEncoder};
 
-/// Maximum size, in bytes, of a vector we are allowed to decode.
+/// Default maximum size of a decoded object in bytes.
 ///
-/// This is also the default value limit that can be decoded with a decoder from
-/// [`CompactSizeDecoder::new`].
-pub(crate) const MAX_VEC_SIZE: usize = 4_000_000;
+/// Matches Bitcoin Core's default [serialization limit]. This is
+/// a high level anti-DoS limit which all bitcoin types should
+/// easily fit within.
+///
+/// [serialization limit]: https://github.com/bitcoin/bitcoin/blob/a7c29df0e5ace05b6186612671d6103c112ec922/src/serialize.h#L32
+const MAX_COMPACT_SIZE: usize = 0x0200_0000;
 
 /// The maximum length of a compact size encoding.
 const SIZE: usize = 9;
@@ -147,17 +150,15 @@ pub struct CompactSizeDecoder {
 impl CompactSizeDecoder {
     /// Constructs a new compact size decoder with the default length limit.
     ///
-    /// The decoded value must not exceed 4,000,000 and must fit in a `usize`,
-    /// otherwise [`end`](Self::end) will return an error. This default limit
-    /// reflects the maximum sensible vector length under the 4 MB block weight
-    /// limit.
-    pub const fn new() -> Self { Self { buf: ArrayVec::new(), limit: MAX_VEC_SIZE } }
+    /// The decoded value must not exceed the default 32MB limit and must fit in
+    /// a `usize`, otherwise [`end`](Self::end) will return an error.
+    pub const fn new() -> Self { Self { buf: ArrayVec::new(), limit: MAX_COMPACT_SIZE } }
 
     /// Constructs a new compact size decoder with a custom length limit.
     ///
     /// The decoded value must not exceed `limit`, otherwise [`end`](Self::end)
     /// will return an error. Use this when you know the field you are decoding
-    /// has a tighter bound than the default limit of 4,000,000.
+    /// has a tighter bound than the default limit of 32MB.
     pub const fn new_with_limit(limit: usize) -> Self { Self { buf: ArrayVec::new(), limit } }
 }
 
@@ -465,23 +466,25 @@ mod tests {
     fn compact_size_new_values_too_large() {
         use CompactSizeDecoderErrorInner as E;
 
-        const EXCESS_VEC_SIZE: u64 = (MAX_VEC_SIZE + 1) as u64; // can't use try_from for const
+        const EXCESS_COMPACT_SIZE: u64 = (MAX_COMPACT_SIZE + 1) as u64;
 
-        // MAX_VEC_SIZE should succeed for `new` constructor
+        // MAX_COMPACT_SIZE should succeed for `new` constructor
+        // 0x0200_0000 as minimal 5-byte compact size: 0xFE + u32 little-endian
         let mut decoder = CompactSizeDecoder::new();
-        decoder.push_bytes(&mut [0xFE, 0x00, 0x09, 0x3D, 0x00].as_slice()).unwrap();
+        decoder.push_bytes(&mut [0xFE, 0x00, 0x00, 0x00, 0x02].as_slice()).unwrap();
         let got = decoder.end().unwrap();
-        assert_eq!(got, MAX_VEC_SIZE);
+        assert_eq!(got, MAX_COMPACT_SIZE);
 
-        // MAX_VEC_SIZE + 1 should fail for `new` constructor
+        // MAX_COMPACT_SIZE + 1 should fail for `new` constructor
+        // 0x0200_0001 as minimal 5-byte compact size: 0xFE + u32 little-endian
         let mut decoder = CompactSizeDecoder::new();
-        decoder.push_bytes(&mut [0xFE, 0x01, 0x09, 0x3D, 0x00].as_slice()).unwrap();
+        decoder.push_bytes(&mut [0xFE, 0x01, 0x00, 0x00, 0x02].as_slice()).unwrap();
         let got = decoder.end().unwrap_err();
         assert!(matches!(
             got,
             CompactSizeDecoderError(E::ValueExceedsLimit(LengthPrefixExceedsMaxError {
-                limit: MAX_VEC_SIZE,
-                value: EXCESS_VEC_SIZE,
+                limit: MAX_COMPACT_SIZE,
+                value: EXCESS_COMPACT_SIZE,
             })),
         ));
     }
