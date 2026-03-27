@@ -41,10 +41,13 @@ pub struct ByteVecDecoder {
 
 #[cfg(feature = "alloc")]
 impl ByteVecDecoder {
-    /// Constructs a new byte decoder.
-    pub const fn new() -> Self {
+    /// Constructs a new byte decoder with the default limit of 4,000,000 bytes.
+    pub const fn new() -> Self { Self::new_with_limit(MAX_VEC_SIZE) }
+
+    /// Constructs a new byte decoder with a custom limit of bytes.
+    pub const fn new_with_limit(limit: usize) -> Self {
         Self {
-            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE)),
+            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(limit)),
             buffer: Vec::new(),
             bytes_expected: 0,
             bytes_written: 0,
@@ -183,10 +186,13 @@ where
 
 #[cfg(feature = "alloc")]
 impl<T: Decodable> VecDecoder<T> {
-    /// Constructs a new byte decoder.
-    pub const fn new() -> Self {
+    /// Constructs a new typed vector decoder with the default limit of 4,000,000 elements.
+    pub const fn new() -> Self { Self::new_with_limit(MAX_VEC_SIZE) }
+
+    /// Constructs a new typed vector decoder with a custom limit of elements.
+    pub const fn new_with_limit(limit: usize) -> Self {
         Self {
-            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE)),
+            prefix_decoder: Some(CompactSizeDecoder::new_with_limit(limit)),
             length: 0,
             buffer: Vec::new(),
             decoder: None,
