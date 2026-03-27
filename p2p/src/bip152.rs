@@ -25,12 +25,6 @@ use io::{BufRead, Write};
 use primitives::block::{BlockHashDecoder, BlockHashEncoder, Header, HeaderDecoder, HeaderEncoder};
 use primitives::transaction::{TransactionDecoder, TransactionEncoder};
 
-/// Maximum number of elements in a vector.
-///
-/// This is an anti-DoS limit which won't possibly reject any block,
-/// or part of a block, on the network.
-const MAX_VEC_SIZE: usize = 4_000_000;
-
 /// A BIP-0152 error
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
@@ -144,7 +138,7 @@ impl encoding::Decodable for PrefilledTransaction {
 
     fn decoder() -> Self::Decoder {
         PrefilledTransactionDecoder(Decoder2::new(
-            CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE),
+            CompactSizeDecoder::new(),
             TransactionDecoder::new(),
         ))
     }
@@ -636,9 +630,7 @@ impl encoding::Decoder for OffsetDecoder {
 impl encoding::Decodable for Offset {
     type Decoder = OffsetDecoder;
 
-    fn decoder() -> Self::Decoder {
-        OffsetDecoder(CompactSizeDecoder::new_with_limit(MAX_VEC_SIZE))
-    }
+    fn decoder() -> Self::Decoder { OffsetDecoder(CompactSizeDecoder::new()) }
 }
 
 /// A [`BlockTransactionsRequest`] structure is used to list transaction indexes
