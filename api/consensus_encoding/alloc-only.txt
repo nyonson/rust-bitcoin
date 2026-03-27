@@ -374,6 +374,7 @@ pub const fn bitcoin_consensus_encoding::ArrayDecoder<N>::new() -> Self
 pub const fn bitcoin_consensus_encoding::ArrayEncoder<N>::without_length_prefix(arr: [u8; N]) -> Self
 pub const fn bitcoin_consensus_encoding::ArrayRefEncoder<'e, N>::without_length_prefix(arr: &'e [u8; N]) -> Self
 pub const fn bitcoin_consensus_encoding::ByteVecDecoder::new() -> Self
+pub const fn bitcoin_consensus_encoding::ByteVecDecoder::new_with_limit(limit: usize) -> Self
 pub const fn bitcoin_consensus_encoding::BytesEncoder<'sl>::without_length_prefix(sl: &'sl [u8]) -> Self
 pub const fn bitcoin_consensus_encoding::CompactSizeDecoder::new() -> Self
 pub const fn bitcoin_consensus_encoding::CompactSizeDecoder::new_with_limit(limit: usize) -> Self
@@ -388,6 +389,7 @@ pub const fn bitcoin_consensus_encoding::Encoder3<A, B, C>::new(enc_1: A, enc_2:
 pub const fn bitcoin_consensus_encoding::Encoder4<A, B, C, D>::new(enc_1: A, enc_2: B, enc_3: C, enc_4: D) -> Self
 pub const fn bitcoin_consensus_encoding::Encoder6<A, B, C, D, E, F>::new(enc_1: A, enc_2: B, enc_3: C, enc_4: D, enc_5: E, enc_6: F) -> Self
 pub const fn bitcoin_consensus_encoding::VecDecoder<T>::new() -> Self
+pub const fn bitcoin_consensus_encoding::VecDecoder<T>::new_with_limit(limit: usize) -> Self
 pub enum bitcoin_consensus_encoding::DecodeError<Err>
 pub enum bitcoin_consensus_encoding::Decoder2Error<A, B>
 pub enum bitcoin_consensus_encoding::Decoder3Error<A, B, C>
