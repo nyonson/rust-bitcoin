@@ -21,8 +21,7 @@ tools:
 @fmt: (rbmt "fmt")
 
 # Check for API changes.
-check-api:
- {{justfile_directory()}}/contrib/check-for-api-changes.sh
+check-api: (rbmt "api")
 
 # Update the recent and minimal lock files.
 @update-lock-files: (rbmt "lock")

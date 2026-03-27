@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        task: [lint, docs, docsrs, bench, "fmt --check"]
+        task: [api, lint, docs, docsrs, bench, "fmt --check"]
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -220,32 +220,6 @@ jobs:
         uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
         with:
           args: "--only-codegen"
-
-  API:
-    needs: Prepare
-    name: API - nightly toolchain
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        dep: [recent]
-    steps:
-      - name: "Checkout repo"
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: "Select toolchain"
-        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9 # v1
-        with:
-          toolchain: ${{ needs.Prepare.outputs.nightly_version }}
-      - name: "Install cargo-public-api"
-        run: cargo install --locked cargo-public-api --version 0.50.1
-      - name: "Set dependencies"
-        run: cp Cargo-${{ matrix.dep }}.lock Cargo.lock
-      - name: "Run API checker script"
-        run: ./contrib/check-for-api-changes.sh
 
   Policy:
     name: Enforce repo policy - stable toolchain
