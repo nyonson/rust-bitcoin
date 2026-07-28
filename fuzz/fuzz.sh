@@ -66,6 +66,6 @@ for targetFile in $targetFiles; do
     fuzz_rustflags='--cfg=hashes_fuzz --cfg=secp256k1_fuzz'
   fi
   # cargo-fuzz will check for the corpus at fuzz/corpus/<target>
-  RUSTFLAGS="$RUSTFLAGS $fuzz_rustflags" cargo +nightly fuzz run "$targetName" -- -max_total_time="$max_total_time"
+  RUSTFLAGS="${RUSTFLAGS:-} $fuzz_rustflags" cargo +nightly fuzz run "$targetName" -- -max_total_time="$max_total_time"
   checkReport "$targetName"
 done
