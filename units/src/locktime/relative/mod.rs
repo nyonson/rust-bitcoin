@@ -440,7 +440,8 @@ impl NumberOfBlocks {
         chain_tip: crate::BlockHeight,
         utxo_mined_at: crate::BlockHeight,
     ) -> Result<bool, InvalidHeightError> {
-        chain_tip.checked_sub(utxo_mined_at)
+        chain_tip
+            .checked_sub(utxo_mined_at)
             .ok_or(InvalidHeightError { chain_tip, utxo_mined_at })
             .map(|diff| u32::from(self.to_height()) <= diff.to_u32())
     }
