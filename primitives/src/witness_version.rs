@@ -67,14 +67,7 @@ pub enum WitnessVersion {
     V16 = 16,
 }
 
-impl WitnessVersion {
-    /// Returns integer version number representation for a given [`WitnessVersion`] value.
-    ///
-    /// NB: this is not the same as an integer representation of the opcode signifying witness
-    /// version in bitcoin script. Thus, there is no function to directly convert witness version
-    /// into a byte since the conversion requires context (bitcoin script or just a version number).
-    pub fn to_num(self) -> u8 { self as u8 }
-}
+impl WitnessVersion {}
 
 /// Prints [`WitnessVersion`] number (from 0 to 16) as integer, without any prefix or suffix.
 impl fmt::Display for WitnessVersion {
@@ -83,22 +76,22 @@ impl fmt::Display for WitnessVersion {
 
 impl fmt::LowerHex for WitnessVersion {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::LowerHex::fmt(&self.to_num(), f) }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::LowerHex::fmt(&(*self as u8), f) }
 }
 
 impl fmt::UpperHex for WitnessVersion {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::UpperHex::fmt(&self.to_num(), f) }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::UpperHex::fmt(&(*self as u8), f) }
 }
 
 impl fmt::Octal for WitnessVersion {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Octal::fmt(&self.to_num(), f) }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Octal::fmt(&(*self as u8), f) }
 }
 
 impl fmt::Binary for WitnessVersion {
     #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Binary::fmt(&self.to_num(), f) }
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { fmt::Binary::fmt(&(*self as u8), f) }
 }
 
 impl FromStr for WitnessVersion {
@@ -155,7 +148,7 @@ impl From<WitnessVersion> for Opcode {
     fn from(version: WitnessVersion) -> Self {
         match version {
             WitnessVersion::V0 => OP_PUSHBYTES_0,
-            no => Self::from(OP_1.to_u8() + no.to_num() - 1),
+            no => Self::from(OP_1.to_u8() + no as u8 - 1),
         }
     }
 }
@@ -238,14 +231,6 @@ mod tests {
 
     use super::*;
     use crate::opcodes::OP_PUSHDATA4;
-
-    #[test]
-    fn witness_version_to_num() {
-        assert_eq!(WitnessVersion::V0.to_num(), 0);
-        assert_eq!(WitnessVersion::V1.to_num(), 1);
-        assert_eq!(WitnessVersion::V2.to_num(), 2);
-        assert_eq!(WitnessVersion::V16.to_num(), 16);
-    }
 
     #[test]
     #[cfg(feature = "alloc")]
