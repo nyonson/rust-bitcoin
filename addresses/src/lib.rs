@@ -314,7 +314,7 @@ impl fmt::Display for AddressInner {
             }
             Self::Segwit { program, hrp } => {
                 let hrp = hrp.to_hrp();
-                let version = Fe32::try_from(program.version().to_num())
+                let version = Fe32::try_from(program.version() as u8)
                     .expect("version nums 0-16 are valid fe32 values");
                 let program = program.program().as_ref();
 
